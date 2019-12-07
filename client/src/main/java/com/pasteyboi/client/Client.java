@@ -23,6 +23,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import org.json.simple.*;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import sun.reflect.generics.tree.Tree;
 
 public class Client extends Application {
@@ -63,13 +64,21 @@ public class Client extends Application {
                     if(new User(username.getText(), password.getText()).getAuth()) {
                         user = new User(username.getText(), password.getText());
                         success = true;
+                        System.out.println("VALID INPUT");
                     }
                     else {
-                        message.setText("Enter a username and password");
+                        System.out.println("INVALID INPUT");
+                        message.setText("Enter a valid username and password");
                     }
                     if(success) {
                         currentUserDumps = Transfer.getUserDumps(user);
-                        userDashboard();
+                        if(currentUserDumps.size() != 0) {
+                            System.out.println("GOT DATA");
+                        }
+                        else {
+                            System.out.println("NO DATA");
+                        }
+                        userdashboard = userDashboard();
                         stage.setScene(userdashboard);
                     }
             }
@@ -86,9 +95,11 @@ public class Client extends Application {
 
     public Scene userDashboard() {
         selectedDump = (JSONObject) ((JSONArray)currentUserDumps).get(0);
+        System.out.println(selectedDump);
         selectedText = (JSONObject) ((JSONArray)selectedDump.get("contents")).get(0);
 
-        GridPane root = new GridPane();
+
+
         final TextArea target = new TextArea();
         TreeView dumps = new TreeView();
         TreeItem rootItem = new TreeItem(user.getUsername());
@@ -106,11 +117,18 @@ public class Client extends Application {
         dumps.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                int dumpIndex = ((TreeItem<String>) ((TreeItem<String>) newValue).getParent()).getParent().getChildren().indexOf(selectedDump);
-                int textIndex = ((TreeItem<String>) newValue).getParent().getChildren().indexOf(((TreeItem<String>) newValue));
-
-                selectedDump = (JSONObject) (((JSONObject)currentUserDumps.get(dumpIndex)).get("contents"));
-                selectedText = (JSONObject) ((JSONArray)selectedDump.get("contents")).get(textIndex);
+                for (Object o: currentUserDumps) {
+                    if((((JSONObject) o).get("dumpID").equals(((TreeItem)newValue).getParent().getValue()))) {
+                        selectedDump = (JSONObject)o;
+                    }
+                }
+                System.out.println(newValue);
+                JSONArray dumpContents = (JSONArray) (selectedDump.get("contents"));
+                for(Object o : dumpContents) {
+                    if (((JSONObject) o).get("fileName").equals(((TreeItem) newValue).getValue())) {
+                        selectedText = (JSONObject) o;
+                    }
+                }
 
                 target.setText((String) ((JSONObject)selectedText).get("body"));
             }
@@ -155,6 +173,7 @@ public class Client extends Application {
                 //Save current text
                 selectedText.put("body", target.getText());
                 Transfer.upload(user, (JSONArray) selectedDump.get("contents"), (String)selectedDump.get("dumpID"));
+
                 //New text
                 JSONObject newtext = new JSONObject();
                 target.setText("");
@@ -184,12 +203,17 @@ public class Client extends Application {
             }
         });
 
-        root.add(dumps, 0, 0);
-        root.add(target, 1, 0);
-        root.add(newText, 0, 1);
-        root.add(newDump, 1, 1);
-        root.add(save, 2, 1);
-        Scene scene = new Scene(root, 1000, 1000);
+        VBox root = new VBox(10);
+
+        HBox stuff = new HBox(1);
+        stuff.getChildren().addAll(dumps, target);
+
+        HBox buttons = new HBox(10);
+        stuff.getChildren().addAll(newText, newDump, save);
+
+        root.getChildren().addAll(stuff, buttons);
+
+        Scene scene = new Scene(root);
         return scene;
     }
 
