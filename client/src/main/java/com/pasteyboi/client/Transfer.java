@@ -69,7 +69,7 @@ public class Transfer {
         return words[indexGen.nextInt(199)] + "-" + words[indexGen.nextInt(199)] + "-" + words[indexGen.nextInt(199)];
     }
 
-    public static void upload(User user, JSONArray files) {
+    public static void upload(User user, JSONArray files, String dumpID) {
         URL url;
         HttpURLConnection con;
 
@@ -83,7 +83,7 @@ public class Transfer {
 
             JSONObject dump = new JSONObject();
             dump.put("userID", user.getUserID());
-            dump.put("dumpID", generateDumpID());
+            dump.put("dumpID", dumpID);
             dump.put("contents", files);
 
             String json = dump.toJSONString();
@@ -106,6 +106,35 @@ public class Transfer {
             System.err.println(e);
             System.exit(-1);
         }
+    }
+
+    public static JSONArray getUserDumps(User user) {
+        URL url;
+        HttpURLConnection con;
+        try {
+            url = new URL("https://pasteyboi.appspot.com/getUserDumps?userID=" + user.getUserID());
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            con.disconnect();
+
+            return (JSONArray) (new JSONParser()).parse(content.toString());
+
+        } catch (IOException | ParseException e){
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        return new JSONArray();
     }
 
     public static JSONArray genJSON(ArrayList<String> files) {
@@ -150,6 +179,8 @@ public class Transfer {
 
 //        upload(u, files);
 
-        download(u, "jet-read-herd");
+//        download(u, "jet-read-herd");
+
+        getUserDumps(u);
     }
 }

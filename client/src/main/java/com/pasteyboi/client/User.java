@@ -24,6 +24,7 @@ public class User {
     }
 
     public void setUsername(String username) {
+        this.userID = hash(username);
         this.username = username;
     }
 
