@@ -39,13 +39,16 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
-
                 //user = new User(username, password);
                 JSONObject dump = Transfer.download(user, id);
 
-                for(Object file : (JSONArray) dump.get("contents")) {
-                    System.out.printf("Filename: %s, Index: %s%n", ((JSONObject) file).get("fileName"), ((JSONObject) file).get("fileIndex"));
-                    System.out.println(((JSONObject) file).get("body"));
+                if (((JSONArray) dump.get("contents")).size() == 0){
+                    System.out.printf("DumpID: %s is invalid%n", ((JSONObject) dump).get("dumpID"));
+                } else {
+                    for(Object file : (JSONArray) dump.get("contents")) {
+                        System.out.printf("Filename: %s, Index: %s%n", ((JSONObject) file).get("fileName"), ((JSONObject) file).get("fileIndex"));
+                        System.out.println(((JSONObject) file).get("body"));
+                    }
                 }
 
                 i ++;
