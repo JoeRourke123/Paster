@@ -34,7 +34,7 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
-                User user = new User(username, password);
+                user = new User(username, password);
                 JSONObject dump = Transfer.download(user, id);
 
                 for(Object file : (JSONArray) dump.get("contents")) {
