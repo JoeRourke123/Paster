@@ -80,8 +80,8 @@ public class CliClient {
                 System.err.println("    --username [USERNAME]");
                 System.err.println("    --password [PASSWORD]");
                 System.err.println("    --download [DUMPID]");
-                System.err.println("    --upload [FILE]");
-                //System.err.println("");
+                System.err.println("    --upload [FILES]");
+                System.err.println("    --helphelp");
                 //System.err.println("");
                     
             } else {
