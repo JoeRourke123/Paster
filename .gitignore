@@ -27,4 +27,8 @@ hs_err_pid*
 __pycache__/
 .DS_Store
 
-.vscode
+.vscode/
+.project
+.classpath
+target/
+client/
