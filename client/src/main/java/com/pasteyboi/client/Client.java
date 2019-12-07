@@ -3,8 +3,10 @@ package com.pasteyboi.client;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 import javafx.scene.Scene;
@@ -52,7 +54,9 @@ public class Client extends Application {
     public Scene LoginScene() {
         GridPane root = new GridPane();
 
-        final Label message = new Label("");
+        final Label message = new Label("PasteyBoi");
+        message.setFont(new Font("Arial", 24));
+
         final TextField username = new TextField();
         final PasswordField password = new PasswordField();
         password.setPromptText("Password");
@@ -83,13 +87,15 @@ public class Client extends Application {
                     }
             }
         });
+
+        root.setAlignment(Pos.CENTER);
+        root.setVgap(5);
         root.add(message, 0, 0);
         root.add(username, 0, 1);
         root.add(password, 0, 2);
         root.add(login, 0, 3);
 
         Scene scene = new Scene(root, 300, 300);
-
         return scene;
     }
 

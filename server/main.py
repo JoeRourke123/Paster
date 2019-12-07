@@ -40,18 +40,15 @@ def createUser():
     }))
 
 
-@app.route("/signinUser", methods=["GET"])
+@app.route("/signinUser", methods=["POST"])
 def signinUser():
     req = request.json
-    ret = {}
 
     with connectDB() as con:
         query = db.sql.text("SELECT * FROM users WHERE userName = '" + req["userName"] + "' AND password='" + req["password"] +"';")
         res = con.execute(query)
 
-        ret["status"] = 401 if res.rowcount != 1 else 200
-
-    return json.dumps(ret)
+        return "401" if res.rowcount != 1 else "200"
 
 
 @app.route("/dump", methods=["POST"])
@@ -59,14 +56,24 @@ def dump():
     req = request.json
 
     with connectDB() as con:
+        query = db.sql.text("DELETE FROM dumps WHERE dumpID='" + req["dumpID"] + "' AND userID='" + req["userID"] + "';")
+        res = con.execute(query)
+
+        query = db.sql.text("DELETE FROM fileDumps WHERE dumpID='" + req["dumpID"] + "';")
+        res = con.execute(query)
+
+        con.close()
+
+    with connectDB() as con:
         query = db.sql.text("INSERT INTO dumps (userID, dumpID) VALUES ('" + req["userID"] + "', '" + req["dumpID"] + "')")
         res = con.execute(query)
 
         for file in req["contents"]:
-            query = db.sql.text("INSERT INTO fileDumps (dumpID, fileIndex, fileName, body) VALUES ('" + req["dumpID"] + "', '" + str(file["fileIndex"]) + "', '" + file["fileName"] + "' ,'" + file["body"] + "')")
+            query = db.sql.text("INSERT INTO fileDumps (dumpID, fileIndex, fileName, body) VALUES ('" + req["dumpID"] + "', '" + str(file["fileIndex"]) + "', '" + str(file["fileName"]) + "' ,'" + str(file["body"]) + "')")
             con.execute(query)
 
     return json.dumps({"status": 200})
+
 
 @app.route("/getDump", methods=["GET"])
 def getDump():
@@ -81,21 +88,41 @@ def getDump():
         res = con.execute(query)
 
         for file in res:
-            ret["contents"].append(file)
+            ret["contents"].append({
+                "fileIndex": file[1],
+                "fileName": file[2],
+                "body": file[3]
+            })
 
     return json.dumps(ret)
 
 
 @app.route("/getUserDumps", methods=["GET"])
 def getUserDumps():
-    req = request.json
+    req = request.args
     ret = []
 
     with connectDB() as con:
-        query = db.sql.text("SELECT dumpID FROM dumps WHERE userID='" + req["userID"] + "';")
-        userDumps = con.execute(query).fetchall()
+        query = db.sql.text("SELECT * FROM dumps WHERE userID='" + req["userID"] + "';")
+        userDumps = con.execute(query)
 
         for id in userDumps:
-            ret.append(requests.post(url_for("getDump"), json={"dumpID": req["dumpID"]}))
+            query = db.sql.text("SELECT * FROM fileDumps WHERE dumpID = '" + id[0] + "' ORDER BY fileIndex;")
+            res = con.execute(query)
+
+            dmp = {
+                "dumpID": id[0],
+                "userID": req["userID"],
+                "contents": []
+            }
+
+            for file in res:
+                dmp["contents"].append({
+                    "fileIndex": file[1],
+                    "fileName": file[2],
+                    "body": file[3]
+                })
+
+            ret.append(dmp)
 
     return json.dumps(ret)

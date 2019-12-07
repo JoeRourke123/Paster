@@ -177,19 +177,21 @@ public class Transfer {
     }
 
     public static void main(String[] args) {
-        User u = new User("joerourke", "hello");
+        User u = new User("comp", "soc");
 
         JSONArray files = new JSONArray();
         JSONObject one = new JSONObject();
         one.put("fileIndex", 0);
         one.put("fileName", "file.txt");
-        one.put("body", "new");
+        one.put("body", "Sean is a slag");
         files.add(one);
 
-//        upload(u, files);
+        System.out.println(u.getAuth());
+
+        upload(u, files, Transfer.generateDumpID());
 
 //        download(u, "jet-read-herd");
 
-        getUserDumps(u);
+//        System.out.println(getUserDumps(u).size());
     }
 }
