@@ -60,7 +60,7 @@ public class Client extends Application {
             @Override
             public void handle(ActionEvent event) {
                     boolean success = false;
-                    if(new User(username.getText(), password.getText()).getAuth) {
+                    if(new User(username.getText(), password.getText()).getAuth()) {
                         user = new User(username.getText(), password.getText());
                         success = true;
                     }
@@ -78,14 +78,6 @@ public class Client extends Application {
         root.add(username, 0, 1);
         root.add(password, 0, 2);
         root.add(login, 0, 3);
-
-        Hyperlink guestLabel = new Hyperlink("Login as guest");
-        guestLabel.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //changeScene();
-            }
-        });
 
         Scene scene = new Scene(root, 300, 300);
 
