@@ -30,7 +30,7 @@ public class CliClient {
                         flag = false;
                     }
                 }
-                System.out.printf("Uploading file(s); %s", files);
+                System.out.printf("Uploading file(s); %s%n", files);
 
                 JSONArray jsonArray = Transfer.genJSON(files);
 
