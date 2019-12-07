@@ -60,14 +60,17 @@ public class Client extends Application {
             @Override
             public void handle(ActionEvent event) {
                     boolean success = false;
-                    if(!username.getText().equals("") && !password.getText().equals("")) {
+                    if(new User(username.getText(), password.getText()).getAuth) {
                         user = new User(username.getText(), password.getText());
-                        currentUserDumps = Transfer.getUserDumps(user);
-                        userDashboard();
-                        stage.setScene(userdashboard);
+                        success = true;
                     }
                     else {
                         message.setText("Enter a username and password");
+                    }
+                    if(success) {
+                        currentUserDumps = Transfer.getUserDumps(user);
+                        userDashboard();
+                        stage.setScene(userdashboard);
                     }
             }
         });
@@ -223,4 +226,3 @@ public class Client extends Application {
         return out;
     }
 }
-
