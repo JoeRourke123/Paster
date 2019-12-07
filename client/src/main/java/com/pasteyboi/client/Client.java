@@ -33,6 +33,8 @@ public class Client extends Application {
     JSONObject selectedDump;
     JSONObject selectedText;
     JSONArray currentUserDumps;
+    Scene userdashboard;
+    Scene login;
 
     public static void main(String[] args) {
         launch(args);
@@ -41,8 +43,9 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
+        login = LoginScene();
         currentUserDumps = Transfer.download(user);
-        Scene login = userDashboard();
+        userdashboard = userDashboard();
 
         stage.setScene(login);
         stage.show();
@@ -63,7 +66,8 @@ public class Client extends Application {
                         user = new User(username.getText(), password.getText());
                         currentUserDumps = Transfer.download(user);
                         guest = false;
-                        //changeScene();
+                        userDashboard();
+                        stage.setScene(userdashboard);
                     }
                     else {
                         message.setText("Enter a username and password");
@@ -146,7 +150,7 @@ public class Client extends Application {
             @Override
             public void handle(ActionEvent event) {
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
             }
         });
         final Button newText = new Button("NEW TEXT");
