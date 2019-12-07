@@ -73,7 +73,19 @@ public class CliClient {
                     }
                 }
             } else if (curr.equals("--list")){
-                System.out.println(args);
+                String id = args[i + 1];
+
+                JSONObject dump = Transfer.download(user, id);
+
+                if (((JSONArray) dump.get("contents")).size() == 0){
+                    System.out.printf("DumpID: %s is invalid%n", ((JSONObject) dump).get("dumpID"));
+                } else {
+                    for(Object file : (JSONArray) dump.get("contents")) {
+                        System.out.printf("Filename: %s, Index: %s%n", ((JSONObject) file).get("fileName"), ((JSONObject) file).get("fileIndex"));
+                    }
+                }
+
+                i ++;
             } else if (curr.equals("--help")){
                 System.err.println("\nPasteyBoi 0.1");
                 System.err.println();
