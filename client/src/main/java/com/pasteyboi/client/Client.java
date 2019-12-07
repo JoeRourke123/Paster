@@ -15,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.DragEvent;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -164,7 +166,7 @@ public class Client extends Application {
             }
         });
 
-        Button save = new Button("SAVE CHANGES");
+        Button save = new Button("Save");
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -172,7 +174,7 @@ public class Client extends Application {
                 Transfer.upload(user, (JSONArray) selectedDump.get("contents"), (String)selectedDump.get("dumpID"));
             }
         });
-        final Button newText = new Button("NEW TEXT");
+        final Button newText = new Button("New File");
         newText.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -198,7 +200,7 @@ public class Client extends Application {
             }
         });
 
-        final Button newDump = new Button("NEW DUMP");
+        final Button newDump = new Button("New Dump");
         newDump.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -220,13 +222,29 @@ public class Client extends Application {
             }
         });
 
+        final Button toFile = new Button("Dump to File");
+        toFile.setOnAction((event) -> {
+            JSONArray files = (JSONArray) selectedDump.get("contents");
+
+            for(Object o : files) {
+                JSONObject obj = (JSONObject) o;
+                try {
+                    FileWriter writer = new FileWriter(new File("./PasteyBoi/" + (String) obj.get("fileName")));
+                    writer.write((String) obj.get("body"));
+                    writer.close();
+                } catch(IOException e) {
+                    System.err.println("Could not write");
+                }
+            }
+        });
+
         VBox root = new VBox(10);
 
         HBox stuff = new HBox(1);
         stuff.getChildren().addAll(dumps, target);
 
         HBox buttons = new HBox(10);
-        buttons.getChildren().addAll(newText, save, newDump);
+        buttons.getChildren().addAll(newText, save, newDump, toFile);
 
         root.getChildren().addAll(stuff, buttons);
 
