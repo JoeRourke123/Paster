@@ -187,7 +187,7 @@ public class Client extends Application {
                 target.setText("");
                 newtext.put("fileIndex", selectedDump.size());
                 newtext.put("body", "");
-                newtext.put("fileName", selectedDump.size());
+                newtext.put("fileName", new ConfirmBox().display("Enter the file name"));
                 ((JSONArray) selectedDump.get("contents")).add(newtext);
                 selectedText = newtext;
 
