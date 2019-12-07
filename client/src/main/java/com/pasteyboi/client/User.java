@@ -1,11 +1,23 @@
 package com.pasteyboi.client;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User {
     private String username, hashedPassword, userID;
+    private boolean auth = false;
 
     public User(){}
 
@@ -13,6 +25,48 @@ public class User {
         this.username = username;
         this.hashedPassword = hash(password);
         this.userID = hash(username);
+
+        URL url;
+        HttpURLConnection con;
+        try {
+            url = new URL("https://pasteyboi.appspot.com/signinUser");
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestProperty("Accept", "application/json");
+            con.setDoOutput(true);
+
+            JSONObject dump = new JSONObject();
+            dump.put("userName", getUsername());
+            dump.put("password", getHashedPassword());
+
+            String json = dump.toJSONString();
+
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = json.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            StringBuilder response = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                if(response.toString().equals("200")) {
+                    this.auth = true;
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println(e);
+            System.exit(-1);
+        }
+    }
+
+    public boolean getAuth() {
+        return auth;
     }
 
     public String getUsername() {
