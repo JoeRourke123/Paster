@@ -69,7 +69,7 @@ public class Transfer {
         return words[indexGen.nextInt(199)] + "-" + words[indexGen.nextInt(199)] + "-" + words[indexGen.nextInt(199)];
     }
 
-    public static void upload(User user, JSONArray files, String dumpID) {
+    public static String upload(User user, JSONArray files, String dumpID) {
         URL url;
         HttpURLConnection con;
 
@@ -83,6 +83,7 @@ public class Transfer {
 
             JSONObject dump = new JSONObject();
             dump.put("userID", user.getUserID());
+            dump.put("password", user.getHashedPassword());
             dump.put("dumpID", dumpID);
             dump.put("contents", files);
 
@@ -102,10 +103,14 @@ public class Transfer {
                 System.out.println(response.toString());
             }
 
+            return dumpID;
+
         } catch (IOException e) {
             System.err.println(e);
             System.exit(-1);
         }
+
+        return "Failed";
     }
 
     public static JSONArray getUserDumps(User user) {
