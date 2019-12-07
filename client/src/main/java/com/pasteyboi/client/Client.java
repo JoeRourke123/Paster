@@ -156,7 +156,7 @@ public class Client extends Application {
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if(db.hasFiles()) {
-                    target.appendText(dumpFiles(db.getFiles(), selectedDump, rootItem));
+                    target.appendText(dumpFiles(db.getFiles(), rootItem));
                     success = true;
                 }
                 event.setDropCompleted(success);
@@ -235,27 +235,24 @@ public class Client extends Application {
     }
 
 
-    public String dumpFiles(Collection<File> path, JSONObject currentDump, TreeItem rootItem) {
-        JSONArray currentDumpArray = (JSONArray)currentDump.get("contents");
-        int index = currentDumpArray.size();
+    public String dumpFiles(Collection<File> path, TreeItem rootItem) {
         String out = "";
         for (File file : path) {
             try {
                 JSONObject newfile = new JSONObject();
                 Scanner fileread = new Scanner(file);
-                newfile.put("fileIndex", index);
-                index++;
-                String[] filename = file.getParent().split("/");
-                newfile.put("fileName", filename[filename.length-1]);
+                newfile.put("fileIndex", ((JSONArray)selectedDump.get("contents")).size());
+
+                String filename = file.getName();
+                newfile.put("fileName", filename);
                 while(fileread.hasNextLine()) {
                     out += fileread.nextLine() + "\n";
                 }
                 newfile.put("body", out);
-                currentDumpArray.add(newfile);
+                ((JSONArray) selectedDump.get("contents")).add(newfile);
                 for (Object item: rootItem.getChildren()) {
                     if(selectedDump.get("dumpID").equals(((TreeItem) item).getValue())) {
-                        ((TreeItem) item).getChildren().add(new TreeItem(selectedText.get("fileName")));
-                        System.out.println("FOUND");
+                        ((TreeItem) item).getChildren().add(new TreeItem(newfile.get("fileName")));
                     }
                 }
             }catch(Exception e) {
