@@ -2,6 +2,9 @@ package com.pasteyboi.client;
 
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
 public class CliClient {
     static String username, password;
 
@@ -25,8 +28,13 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
-                User user = new User();
-                Transfer.download(user, id);
+                User user = new User(username, password);
+                JSONObject dump = Transfer.download(user, id);
+
+                for(Object file : (JSONArray) dump.get("contents")) {
+                    System.out.println(((JSONObject) file).get("body"));
+                }
+
                 i ++;
             } else if (curr.equals("--username")){
                 username = args[i + 1];

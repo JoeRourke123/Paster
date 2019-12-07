@@ -14,7 +14,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Transfer {
-    public static void download(User user, String id){
+    public static JSONObject download(User user, String id) {
         URL url;
         HttpURLConnection con;
         try {
@@ -33,14 +33,16 @@ public class Transfer {
                 content.append(inputLine);
             }
             in.close();
-
-            System.out.println(content);
-
             con.disconnect();
-        } catch (IOException e){
+
+            return (JSONObject) (new JSONParser()).parse(content.toString());
+
+        } catch (IOException | ParseException e){
             System.err.println(e);
             System.exit(1);
         }
+
+        return new JSONObject();
     }
 
     public static String generateDumpID() {
@@ -100,7 +102,7 @@ public class Transfer {
         one.put("body", "new");
         files.add(one);
 
-        upload(u, files);
+//        upload(u, files);
 
         download(u, "jet-read-herd");
     }
