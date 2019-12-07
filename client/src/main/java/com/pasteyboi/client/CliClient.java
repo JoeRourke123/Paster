@@ -2,8 +2,13 @@ package com.pasteyboi.client;
 
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 public class CliClient {
     static String username, password;
+
+    static User user;
 
     public static void main(String[] args){
         for (int i = 0; i < args.length; i ++){
@@ -21,6 +26,10 @@ public class CliClient {
                     }
                 }
                 System.out.printf("Uploading file(s); %s", files);
+
+                JSONArray jsonArray = Transfer.genJSON(files);
+
+                Transfer.upload(user, jsonArray);
                 
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
