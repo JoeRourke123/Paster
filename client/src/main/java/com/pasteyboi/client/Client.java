@@ -26,8 +26,7 @@ import org.json.simple.*;
 import sun.reflect.generics.tree.Tree;
 
 public class Client extends Application {
-
-    boolean guest = true;
+    
     User user;
     Stage stage;
     JSONObject selectedDump;
@@ -44,8 +43,6 @@ public class Client extends Application {
     public void start(Stage primaryStage) {
         stage = primaryStage;
         login = LoginScene();
-        currentUserDumps = Transfer.download(user);
-        userdashboard = userDashboard();
 
         stage.setScene(login);
         stage.show();
@@ -64,8 +61,7 @@ public class Client extends Application {
             public void handle(ActionEvent event) {
                     if(!username.getText().equals("") && !password.getText().equals("")){
                         user = new User(username.getText(), password.getText());
-                        currentUserDumps = Transfer.download(user);
-                        guest = false;
+                        currentUserDumps = Transfer.getUserDumps(user);
                         userDashboard();
                         stage.setScene(userdashboard);
                     }
@@ -75,6 +71,10 @@ public class Client extends Application {
 
             }
         });
+        root.add(message, 0, 0);
+        root.add(username, 0, 1);
+        root.add(password, 0, 2);
+        root.add(login, 0, 3);
 
         Hyperlink guestLabel = new Hyperlink("Login as guest");
         guestLabel.setOnAction(new EventHandler<ActionEvent>() {
@@ -150,7 +150,7 @@ public class Client extends Application {
             @Override
             public void handle(ActionEvent event) {
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"), (String)selectedDump.get("dumpID"));
             }
         });
         final Button newText = new Button("NEW TEXT");
@@ -159,7 +159,7 @@ public class Client extends Application {
             public void handle(ActionEvent event) {
                 //Save current text
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"), (String)selectedDump.get("dumpID"));
                 //New text
                 JSONObject newtext = new JSONObject();
                 target.setText("");
@@ -175,7 +175,7 @@ public class Client extends Application {
             public void handle(ActionEvent event) {
                 //Save current text
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"), (String)selectedDump.get("dumpID"));
 
                 JSONObject newDump = new JSONObject();
                 String dumpID = Transfer.generateDumpID();
@@ -198,14 +198,6 @@ public class Client extends Application {
         return scene;
     }
 
-    public Scene guestDashboard() {
-        GridPane root = new GridPane();
-
-
-
-        Scene scene = new Scene(root);
-        return scene;
-    }
 
     public String dumpFiles(Collection<File> path, JSONObject currentDump) {
         JSONArray currentDumpArray = (JSONArray)currentDump.get("contents");
@@ -230,11 +222,5 @@ public class Client extends Application {
         }
         return out;
     }
-
-/*
-    public void changeScene() {
-        guest ? stage.setScene(guestdashboard) : stage.setScene(user dashboard);
-    }
-    */
 }
 
