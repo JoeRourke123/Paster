@@ -1,4 +1,4 @@
-package main.java.com.pasteyboi.client;
+package com.pasteyboi.client;
 
 public class CliClient {
     static String username, password;
