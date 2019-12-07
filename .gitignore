@@ -26,5 +26,10 @@ hs_err_pid*
 .idea/
 __pycache__/
 .DS_Store
+.gcloudignore
 
-.vscode
+.vscode/
+.project
+.classpath
+target/
+client/
