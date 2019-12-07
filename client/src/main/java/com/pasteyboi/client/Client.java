@@ -154,7 +154,7 @@ public class Client extends Application {
             public void handle(ActionEvent event) {
                 //Save current text
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
                 //New text
                 JSONObject newtext = new JSONObject();
                 target.setText("");
@@ -170,7 +170,7 @@ public class Client extends Application {
             public void handle(ActionEvent event) {
                 //Save current text
                 selectedText.put("body", target.getText());
-                Transfer.upload(user, selectedDump.get("contents"));
+                Transfer.upload(user, (JSONArray) selectedDump.get("contents"));
 
                 JSONObject newDump = new JSONObject();
                 String dumpID = Transfer.generateDumpID();
