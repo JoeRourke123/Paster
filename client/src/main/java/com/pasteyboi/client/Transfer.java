@@ -161,7 +161,7 @@ public class Transfer {
                 sc = new Scanner(new File(file));
 
                 while (sc.hasNextLine()){
-                    body += sc.nextLine();
+                    body += sc.nextLine() + "\n";
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
