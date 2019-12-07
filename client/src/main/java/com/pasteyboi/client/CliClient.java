@@ -39,6 +39,7 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
+
                 user = new User(username, password);
                 JSONObject dump = Transfer.download(user, id);
 
