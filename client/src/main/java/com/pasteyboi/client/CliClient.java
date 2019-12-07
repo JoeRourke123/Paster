@@ -53,6 +53,10 @@ public class CliClient {
                 i ++;
             } else if (curr.equals("--password")) {
                 user.setPassword(args[i + 1]);
+
+                user = new User(user.getUsername(), user.getHashedPassword());
+
+                System.out.println(user.getAuth());
                 i++;
             } else if (curr.equals("--dumps")) {
                 JSONArray dumps = Transfer.getUserDumps(user);
