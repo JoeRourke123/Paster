@@ -102,7 +102,7 @@ public class Client extends Application {
 
         final TextArea target = new TextArea();
         TreeView dumps = new TreeView();
-        TreeItem rootItem = new TreeItem(user.getUsername());
+        final TreeItem rootItem = new TreeItem(user.getUsername());
 
         for (Object dump: currentUserDumps) {
             TreeItem item = new TreeItem(((JSONObject)dump).get("dumpID"));
@@ -150,7 +150,7 @@ public class Client extends Application {
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if(db.hasFiles()) {
-                    target.appendText(dumpFiles(db.getFiles(), selectedDump));
+                    target.appendText(dumpFiles(db.getFiles(), selectedDump, rootItem));
                     success = true;
                 }
                 event.setDropCompleted(success);
@@ -179,7 +179,16 @@ public class Client extends Application {
                 target.setText("");
                 newtext.put("fileIndex", selectedDump.size());
                 newtext.put("body", "");
-                selectedDump.put("contents", newtext);
+                newtext.put("fileName", selectedDump.size());
+                ((JSONArray) selectedDump.get("contents")).add(newtext);
+                selectedText = newtext;
+
+                for (Object item: rootItem.getChildren()) {
+                    if(selectedDump.get("dumpID").equals(((TreeItem) item).getValue())) {
+                        ((TreeItem) item).getChildren().add(new TreeItem(selectedText.get("fileName")));
+                        System.out.println("FOUND");
+                    }
+                }
             }
         });
 
@@ -195,11 +204,13 @@ public class Client extends Application {
                 String dumpID = Transfer.generateDumpID();
                 newDump.put("dumpID", dumpID);
                 newDump.put("userID", user.getUserID());
-
-                newDump.put("contents", null);
+                newDump.put("contents", new JSONArray());
 
                 currentUserDumps.add(newDump);
-                selectedDump = (JSONObject) currentUserDumps.get(currentUserDumps.size()-1);
+                //selectedDump = (JSONObject) currentUserDumps.get(currentUserDumps.size()-1);
+
+                rootItem.getChildren().add(new TreeItem(newDump.get("dumpID")));
+                selectedDump = newDump;
             }
         });
 
@@ -209,7 +220,7 @@ public class Client extends Application {
         stuff.getChildren().addAll(dumps, target);
 
         HBox buttons = new HBox(10);
-        stuff.getChildren().addAll(newText, newDump, save);
+        buttons.getChildren().addAll(newText, save, newDump);
 
         root.getChildren().addAll(stuff, buttons);
 
@@ -218,7 +229,7 @@ public class Client extends Application {
     }
 
 
-    public String dumpFiles(Collection<File> path, JSONObject currentDump) {
+    public String dumpFiles(Collection<File> path, JSONObject currentDump, TreeItem rootItem) {
         JSONArray currentDumpArray = (JSONArray)currentDump.get("contents");
         int index = currentDumpArray.size();
         String out = "";
@@ -234,11 +245,17 @@ public class Client extends Application {
                     out += fileread.nextLine() + "\n";
                 }
                 newfile.put("body", out);
-                currentDumpArray.add(file);
+                currentDumpArray.add(newfile);
+                for (Object item: rootItem.getChildren()) {
+                    if(selectedDump.get("dumpID").equals(((TreeItem) item).getValue())) {
+                        ((TreeItem) item).getChildren().add(new TreeItem(selectedText.get("fileName")));
+                        System.out.println("FOUND");
+                    }
+                }
             }catch(Exception e) {
                 System.out.println("Not a text file");
             }
         }
-        return out;
+        return null;
     }
 }
