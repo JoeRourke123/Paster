@@ -1,4 +1,4 @@
-package client;
+package main.java.com.pasteyboi.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package client;
+package main.java.com.pasteyboi.client;
 
 import javafx.application.Application;
 import javafx.scene.control.*;
