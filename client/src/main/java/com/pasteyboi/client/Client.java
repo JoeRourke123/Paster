@@ -26,7 +26,7 @@ import org.json.simple.*;
 import sun.reflect.generics.tree.Tree;
 
 public class Client extends Application {
-    
+
     User user;
     Stage stage;
     JSONObject selectedDump;
@@ -59,7 +59,8 @@ public class Client extends Application {
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                    if(!username.getText().equals("") && !password.getText().equals("")){
+                    boolean success = false;
+                    if(!username.getText().equals("") && !password.getText().equals("")) {
                         user = new User(username.getText(), password.getText());
                         currentUserDumps = Transfer.getUserDumps(user);
                         userDashboard();
@@ -68,7 +69,6 @@ public class Client extends Application {
                     else {
                         message.setText("Enter a username and password");
                     }
-
             }
         });
         root.add(message, 0, 0);
@@ -84,7 +84,7 @@ public class Client extends Application {
             }
         });
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 300, 300);
 
         return scene;
     }
@@ -194,7 +194,7 @@ public class Client extends Application {
         root.add(newText, 0, 1);
         root.add(newDump, 1, 1);
         root.add(save, 2, 1);
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 1000, 1000);
         return scene;
     }
 
