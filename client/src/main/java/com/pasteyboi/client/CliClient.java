@@ -29,11 +29,11 @@ public class CliClient {
                         flag = false;
                     }
                 }
-                System.out.printf("Uploading file(s); %s", files);
+                System.out.printf("Uploading file(s); %s%n", files);
 
                 JSONArray jsonArray = Transfer.genJSON(files);
 
-                Transfer.upload(user, jsonArray);
+                Transfer.upload(user, jsonArray, Transfer.generateDumpID());
                 
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
