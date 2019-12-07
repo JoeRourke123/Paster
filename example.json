@@ -1,0 +1,16 @@
+{
+  "dumpID": "george-is-hoe",
+  "userID": "3492tinwevrt9j39tjge-qfpfjoew",
+  "contents": [
+    {
+      "fileIndex": 0,
+      "fileName": "Hello.java",
+      "body": "class Work { public static void main(String[] args) { System.out.println('Hello world'); } }"
+    },
+    {
+      "fileIndex": 1,
+      "fileName": "New.java",
+      "body": "class Work { public static void main(String[] args) { System.out.println('Hello world'); } }"
+    }
+  ]
+}
