@@ -63,21 +63,22 @@ def dump():
         res = con.execute(query)
 
         for file in req["contents"]:
-            query = db.sql.text("INSERT INTO fileDumps (dumpID, fileIndex, fileName, contents) VALUES ('" + req["dumpID"] + "', '" + file["fileIndex"] + "', '" + file["fileName"] + "' ,'" + file["body"] + "')")
+            query = db.sql.text("INSERT INTO fileDumps (dumpID, fileIndex, fileName, body) VALUES ('" + req["dumpID"] + "', '" + str(file["fileIndex"]) + "', '" + file["fileName"] + "' ,'" + file["body"] + "')")
             con.execute(query)
 
+    return json.dumps({"status": 200})
 
 @app.route("/getDump", methods=["GET"])
 def getDump():
-    req = request.json
+    req = request.args
     ret = {
         "dumpID": req["dumpID"],
         "contents": [],
     }
 
     with connectDB() as con:
-        query = db.sql.text("SELECT (fileIndex, fileName, contents) FROM fileDumps WHERE dumpID = '" + req["dumpID"] + "' ORDER BY fileIndex;")
-        res = con.execute(query).fetchall()
+        query = db.sql.text("SELECT (fileIndex, fileName, body) FROM fileDumps WHERE dumpID = '" + req["dumpID"] + "' ORDER BY fileIndex;")
+        res = con.execute(query)
 
         for file in res:
             ret["contents"].append(file)
@@ -96,3 +97,5 @@ def getUserDumps():
 
         for id in userDumps:
             ret.append(requests.post(url_for("getDump"), json={"dumpID": req["dumpID"]}))
+
+    return json.dumps(ret)

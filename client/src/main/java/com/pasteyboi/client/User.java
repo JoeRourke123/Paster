@@ -5,10 +5,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User {
-    private String username, hashedPassword;
+    private String username, hashedPassword, userID;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.hashedPassword = hash(password);
+        this.userID = hash(username);
+    }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUserID() {
+        return userID;
     }
 
     public void setUsername(String username) {
@@ -19,7 +29,7 @@ public class User {
         return this.hashedPassword;
     }
 
-    public void setHashedPassword(String password) {
+    public String hash(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -28,9 +38,11 @@ public class User {
                 sb.append(String.format("%02x", i));
             }
     
-            this.hashedPassword = sb.toString();
+            return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+
+        return password;
     }
 }
