@@ -39,6 +39,7 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
+
                 user = new User(username, password);
                 JSONObject dump = Transfer.download(user, id);
 
@@ -52,6 +53,10 @@ public class CliClient {
                 i ++;
             } else if (curr.equals("--password")) {
                 user.setPassword(args[i + 1]);
+
+                user = new User(user.getUsername(), user.getHashedPassword());
+
+                System.out.println(user.getAuth());
                 i++;
             } else if (curr.equals("--dumps")) {
                 JSONArray dumps = Transfer.getUserDumps(user);

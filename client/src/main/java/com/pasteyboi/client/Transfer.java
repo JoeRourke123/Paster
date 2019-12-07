@@ -119,20 +119,24 @@ public class Transfer {
         try {
             url = new URL("https://pasteyboi.appspot.com/getUserDumps?userID=" + user.getUserID());
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+		    con.setRequestMethod("GET");
+		    int responseCode = con.getResponseCode();
+		    System.out.println("GET Response Code :: " + responseCode);
+		    if (responseCode == HttpURLConnection.HTTP_OK) { // success
+			    BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			    String inputLine;
+			    StringBuffer response = new StringBuffer();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			    while ((inputLine = in.readLine()) != null) {
+			    	response.append(inputLine);
+			    }
+			    in.close();
+                return (JSONArray) (new JSONParser()).parse(response.toString());
 
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
+            } else {
+                System.out.println("GET request not worked");
             }
-            in.close();
-            con.disconnect();
-
-            return (JSONArray) (new JSONParser()).parse(content.toString());
 
         } catch (IOException | ParseException e){
             System.err.println(e);
