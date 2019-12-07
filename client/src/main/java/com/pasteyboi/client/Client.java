@@ -32,6 +32,7 @@ public class Client extends Application {
     Stage stage;
     JSONObject selectedDump;
     JSONObject selectedText;
+    JSONArray currentUserDumps;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,7 +41,8 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
-        Scene login = userDashboard(Transfer.download(user));
+        currentUserDumps = Transfer.download(user);
+        Scene login = userDashboard();
 
         stage.setScene(login);
         stage.show();
@@ -58,9 +60,8 @@ public class Client extends Application {
             @Override
             public void handle(ActionEvent event) {
                     if(!username.getText().equals("") && !password.getText().equals("")){
-                        user = new User();
-                        user.setHashedPassword(password.getText());
-                        user.setUsername(username.getText());
+                        user = new User(username.getText(), password.getText());
+                        currentUserDumps = Transfer.download(user);
                         guest = false;
                         //changeScene();
                     }
@@ -84,7 +85,7 @@ public class Client extends Application {
         return scene;
     }
 
-    public Scene userDashboard(final JSONArray currentUserDumps) {
+    public Scene userDashboard() {
         selectedDump = (JSONObject) ((JSONArray)currentUserDumps).get(0);
         selectedText = (JSONObject) ((JSONArray)selectedDump.get("contents")).get(0);
 
