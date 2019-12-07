@@ -1,5 +1,7 @@
 package com.pasteyboi.client;
 
+import java.util.ArrayList;
+
 public class CliClient {
     static String username, password;
 
@@ -8,8 +10,18 @@ public class CliClient {
             String curr = args[i];
 
             if (curr.equals("--upload")){
-                System.out.print(args[i + 1]);
-                i ++;
+                boolean flag = true;
+                ArrayList<String> files = new ArrayList<String>();
+                while (flag){
+                    if (args[i + 1].substring(0, 2).equals("--")){
+                        flag = false; 
+                    } else {
+                        files.add(args[i + 1]);
+                        i ++;
+                    }
+                }
+                System.out.printf("Uploading file(s); %s", files);
+                
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
@@ -24,8 +36,21 @@ public class CliClient {
                 i ++;
             } else if (curr.equals("--list")){
                 System.out.println(args);
+            } else if (curr.equals("--help")){
+                System.err.println("\nPasteyBoi 0.1");
+                System.err.println();
+                System.err.println("Username & password need to be specified before other arguments");
+                System.err.println();
+                System.err.println("Options:");
+                System.err.println("    --username [USERNAME]");
+                System.err.println("    --password [PASSWORD]");
+                System.err.println("    --download [DUMPID]");
+                System.err.println("    --upload [FILE]");
+                //System.err.println("");
+                //System.err.println("");
+                    
             } else {
-                System.err.println("Invalid argument");
+                System.err.println("Invalid argument, type --help or -h for help");
             }
         }
     }
