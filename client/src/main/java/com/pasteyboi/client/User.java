@@ -7,6 +7,8 @@ import java.security.NoSuchAlgorithmException;
 public class User {
     private String username, hashedPassword, userID;
 
+    public User(){}
+
     public User(String username, String password) {
         this.username = username;
         this.hashedPassword = hash(password);
@@ -27,6 +29,10 @@ public class User {
 
     public String getHashedPassword() {
         return this.hashedPassword;
+    }
+
+    public void setPassword(String password){
+        this.hashedPassword = hash(password);
     }
 
     public String hash(String password) {

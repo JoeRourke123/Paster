@@ -8,7 +8,7 @@ import org.json.simple.JSONArray;
 public class CliClient {
     static String username, password;
 
-    static User user;
+    static User user = new User();
 
     public static void main(String[] args){
         for (int i = 0; i < args.length; i ++){
@@ -18,11 +18,15 @@ public class CliClient {
                 boolean flag = true;
                 ArrayList<String> files = new ArrayList<String>();
                 while (flag){
-                    if (args[i + 1].substring(0, 2).equals("--")){
-                        flag = false; 
+                    if (i < args.length){
+                        if (args[i + 1].substring(0, 2).equals("--")){
+                            flag = false; 
+                        } else {
+                            files.add(args[i + 1]);
+                            i ++;
+                        }
                     } else {
-                        files.add(args[i + 1]);
-                        i ++;
+                        flag = false;
                     }
                 }
                 System.out.printf("Uploading file(s); %s", files);
@@ -43,10 +47,10 @@ public class CliClient {
 
                 i ++;
             } else if (curr.equals("--username")){
-                username = args[i + 1];
+                user.setUsername(args[i + 1]);
                 i ++;
             } else if (curr.equals("--password")){
-                password = args[i + 1];
+                user.setPassword(args[i + 1]);
                 i ++;
             } else if (curr.equals("--list")){
                 System.out.println(args);
