@@ -1,4 +1,4 @@
-package main.java.com.pasteyboi.client;
+package com.pasteyboi.client;
 
 public class CliClient {
     static String username, password;
@@ -13,6 +13,8 @@ public class CliClient {
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
 
+                User user = new User();
+                Transfer.download(user, id);
                 i ++;
             } else if (curr.equals("--username")){
                 username = args[i + 1];

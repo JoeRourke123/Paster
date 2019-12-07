@@ -1,4 +1,4 @@
-package main.java.com.pasteyboi.client;
+package com.pasteyboi.client;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

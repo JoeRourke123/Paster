@@ -1,4 +1,4 @@
-package main.java.com.pasteyboi.client;
+package com.pasteyboi.client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

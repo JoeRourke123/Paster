@@ -1,4 +1,4 @@
-package main.java.com.pasteyboi.client;
+package com.pasteyboi.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +15,9 @@ public class Transfer {
         URL url;
         HttpURLConnection con;
         try {
-            url = new URL("https://httpbin.org/get");
+            url = new URL("http://localhost:8000/example.json");
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-
                     
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -27,6 +26,16 @@ public class Transfer {
                 content.append(inputLine);
             }
             in.close();
+
+            try {
+                JSONParser parser = new JSONParser();
+                Object jsonObj = parser.parse(content.toString());
+
+                JSONObject jsonObject = (JSONObject) jsonObj;
+            } catch (ParseException e){
+                System.err.println(e);
+            }
+
         } catch (IOException e){
             System.err.println(e);
             System.exit(1);
