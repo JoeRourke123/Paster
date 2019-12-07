@@ -1,6 +1,7 @@
 package com.pasteyboi.client;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -33,7 +34,7 @@ public class CliClient {
 
                 JSONArray jsonArray = Transfer.genJSON(files);
 
-                Transfer.upload(user, jsonArray);
+                Transfer.upload(user, jsonArray, Transfer.generateDumpID());
                 
             } else if (curr.equals("--download")){
                 String id = args[i + 1];
@@ -49,9 +50,19 @@ public class CliClient {
             } else if (curr.equals("--username")){
                 user.setUsername(args[i + 1]);
                 i ++;
-            } else if (curr.equals("--password")){
+            } else if (curr.equals("--password")) {
                 user.setPassword(args[i + 1]);
-                i ++;
+                i++;
+            } else if (curr.equals("--dumps")) {
+                JSONArray dumps = Transfer.getUserDumps(user);
+                Scanner scan = new Scanner(System.in);
+                String in = "";
+
+                while(!in.equals("-1")) {
+                    for (Object obj : dumps) {
+                        System.out.println(((JSONObject)obj).get("dumpID"));
+                    }
+                }
             } else if (curr.equals("--list")){
                 System.out.println(args);
             } else if (curr.equals("--help")){
