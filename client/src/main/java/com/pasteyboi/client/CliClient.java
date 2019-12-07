@@ -40,10 +40,11 @@ public class CliClient {
                 String id = args[i + 1];
 
 
-                user = new User(username, password);
+                //user = new User(username, password);
                 JSONObject dump = Transfer.download(user, id);
 
                 for(Object file : (JSONArray) dump.get("contents")) {
+                    System.out.printf("Filename: %s, Index: %s%n", ((JSONObject) file).get("fileName"), ((JSONObject) file).get("fileIndex"));
                     System.out.println(((JSONObject) file).get("body"));
                 }
 
