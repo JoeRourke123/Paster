@@ -1,2 +1,2 @@
-# PasteyBoi
-Pretty much just a Pastebin
+# Paster
+What started out as a pastebin became so much more...
